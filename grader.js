@@ -29,7 +29,7 @@ var url = require('url');
 
 var HTMLFILE_DEFAULT = "index.html";
 var CHECKSFILE_DEFAULT = "checks.json";
-
+var URL_DEFAULT = "";
 var assertFileExists = function(infile) {
     var instr = infile.toString();
     if(!fs.existsSync(instr)) {
@@ -38,6 +38,10 @@ var assertFileExists = function(infile) {
     }
     return instr;
 };
+
+var assertUrlExists = function(val) {
+    return val.toString();
+}
 
 var cheerioHtmlFile = function(htmlfile) {
     return cheerio.load(fs.readFileSync(htmlfile));
@@ -68,10 +72,11 @@ if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
         .option('-f, --file <html_file>', 'Path to index.html', clone(assertFileExists), HTMLFILE_DEFAULT)
-	.option('-u, --url ', 'URL to page to test', String) 
+	.option('-u, --url <url>', 'url to check', clone(assertUrlExists), URL_DEFAULT)
         .parse(process.argv);
     if (program.url != null) {
-	var urlAsString = "http://fathomless-eyrie-6001.herokuapp.com/";
+	var urlAsString = program.url; //"http://fathomless-eyrie-6001.herokuapp.com/";
+	console.log(urlAsString);
 	rest.get(urlAsString).on('complete', function(result) {
             if (result instanceof Error) {
 		console.log('Error: ' + result.message);
